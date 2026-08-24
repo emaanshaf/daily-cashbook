@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
+    <title>Daily Cashbook</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/12.18.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/12.18.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/12.18.0/firebase-firestore-compat.js"></script>
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="app-container" id="appContainer">
+    <!-- Login Screen -->
+    <div id="loginScreen" class="login-screen">
+        <div class="login-logo">
+            <i class="fas fa-wallet"></i>
+        </div>
+        <h1 class="login-title">Daily <span>Cashbook</span></h1>
+        <p class="login-subtitle">
+            <i class="fas fa-cloud"></i> Cloud sync across devices
+        </p>
+        <div class="login-form">
+            <div class="input-group">
+                <i class="fas fa-envelope"></i>
+                <input type="email" id="loginEmail" placeholder="Email" value="demo@mail.com">
+            </div>
+            <div class="input-group">
+                <i class="fas fa-lock"></i>
+                <input type="password" id="loginPassword" placeholder="Password" value="123456">
+            </div>
+            <div class="login-actions">
+                <button class="btn-primary" id="loginBtn"><i class="fas fa-sign-in-alt"></i> Login</button>
+                <button class="btn-secondary" id="signupBtn"><i class="fas fa-user-plus"></i> Sign Up</button>
+            </div>
+            <div id="loginError" class="login-error"></div>
+        </div>
+    </div>
+
+    <!-- Main App -->
+    <div id="mainApp" class="main-app">
+        <!-- Top Bar -->
+        <div class="top-bar">
+            <div class="app-brand">
+                <div class="brand-icon">
+                    <i class="fas fa-wallet"></i>
+                </div>
+                <div class="brand-name">Daily <span>Cashbook</span></div>
+            </div>
+            <div class="user-area">
+                <span id="syncStatus" class="sync-status"><i class="fas fa-cloud-upload-alt synced"></i></span>
+                <div class="user-info">
+                    <span id="userDisplayName" class="user-display-name">User</span>
+                    <span id="userEmail" class="user-email-small"></span>
+                </div>
+                <button class="btn-edit-username" id="usernameEditBtn" title="Edit Username">
+                    <i class="fas fa-pen"></i>
+                </button>
+                <div class="user-avatar">
+                    <i class="fas fa-user"></i>
+                </div>
+                <button class="btn-logout" id="logoutBtn" title="Logout">
+                    <i class="fas fa-sign-out-alt"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Navigation -->
+        <div class="nav-tabs">
+            <button class="nav-tab active" data-tab="companies">
+                <i class="fas fa-building"></i> Companies
+            </button>
+            <button class="nav-tab" data-tab="payments">
+                <i class="fas fa-hand-holding-usd"></i> Payments
+            </button>
+            <button class="nav-tab" data-tab="notepad">
+                <i class="fas fa-sticky-note"></i> Notepad
+            </button>
+        </div>
+
+        <!-- Tab: Companies -->
+        <div id="tab-companies" class="tab-content active">
+            <div class="card">
+                <div class="card-header">
+                    <h3><i class="fas fa-store" style="color:#2563eb;margin-right:6px;"></i>My Companies</h3>
+                    <span class="badge" id="companyCount">0</span>
+                </div>
+                <div class="card-body">
+                    <div id="companyContainer" class="company-list">
+                        <div class="loading-spinner"><i class="fas fa-spinner"></i> Loading...</div>
+                    </div>
+                    <div class="add-company">
+                        <input type="text" id="newCompanyName" placeholder="Add company...">
+                        <button id="addCompanyBtn"><i class="fas fa-plus"></i> Add</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab: Payments -->
+        <div id="tab-payments" class="tab-content">
+            <div class="card">
+                <div class="card-header">
+                    <h3><i class="fas fa-hand-holding-usd" style="color:#2563eb;margin-right:6px;"></i>My Payments</h3>
+                    <span class="badge" id="paymentCount">0</span>
+                </div>
+                <div class="card-body">
+                    <div class="payment-input">
+                        <div class="payment-row">
+                            <input type="text" id="newPaymentPerson" placeholder="Person/Company name...">
+                        </div>
+                        <div class="payment-row" style="display:flex;gap:10px;flex-wrap:wrap;">
+                            <div class="amount-group" style="flex:1;min-width:120px;">
+                                <span class="currency-label">Rs</span>
+                                <input type="number" id="newPaymentAmount" placeholder="Amount" min="0" step="0.01">
+                            </div>
+                            <input type="date" id="newPaymentDate" value="" style="flex:1;min-width:120px;">
+                        </div>
+                        <div class="payment-row">
+                            <input type="text" id="newPaymentPurpose" placeholder="Purpose (e.g., Stock purchase)">
+                        </div>
+                        <div class="payment-row">
+                            <input type="file" id="newPaymentReceipt" accept="image/*" multiple style="padding:8px;border:1px solid #e2e8f0;border-radius:10px;width:100%;font-size:13px;">
+                            <span style="font-size:11px;color:#94a3b8;display:block;margin-top:4px;">Upload receipt image (optional, multiple allowed)</span>
+                        </div>
+                        <div class="payment-actions-row">
+                            <button class="btn-add-payment" id="addPaymentBtn"><i class="fas fa-plus"></i> Add Payment</button>
+                        </div>
+                    </div>
+                    <div id="paymentContainer" class="payment-list">
+                        <!-- Payments rendered here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab: Notepad -->
+        <div id="tab-notepad" class="tab-content">
+            <div class="card">
+                <div class="card-header">
+                    <h3><i class="fas fa-pen" style="color:#2563eb;margin-right:6px;"></i>My Notes</h3>
+                    <span class="badge" id="notesCount">0</span>
+                </div>
+                <div class="card-body">
+                    <div class="note-input">
+                        <div class="date-row">
+                            <label><i class="fas fa-calendar-alt"></i></label>
+                            <input type="date" id="noteDate">
+                        </div>
+                        <textarea id="noteContent" placeholder="Write your note here..."></textarea>
+                        <div class="note-actions">
+                            <button class="btn-save" id="saveNoteBtn"><i class="fas fa-save"></i> Save</button>
+                            <button class="btn-clear" id="clearNoteBtn"><i class="fas fa-eraser"></i> Clear</button>
+                        </div>
+                    </div>
+                    <div id="notesContainer" class="notes-list">
+                        <div class="loading-spinner"><i class="fas fa-spinner"></i> Loading...</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div id="billModal" class="modal-overlay">
+    <div class="modal-content">
+        <button class="modal-close" id="modalCloseBtn">&times;</button>
+        <h3 id="modalTitle" style="font-size:17px;font-weight:700;color:#0f172a;margin-bottom:10px;">Details</h3>
+        <div id="modalBody"></div>
+    </div>
+</div>
+
+<!-- Username Modal -->
+<div id="usernameModal" class="modal-overlay">
+    <div class="modal-content" style="max-width:360px;">
+        <button class="modal-close" id="usernameModalClose">&times;</button>
+        <h3 style="font-size:17px;font-weight:700;color:#0f172a;margin-bottom:12px;">
+            <i class="fas fa-user-edit" style="color:#2563eb;margin-right:8px;"></i>Edit Username
+        </h3>
+        <p style="font-size:13px;color:#64748b;margin-bottom:14px;">Choose a display name for your account</p>
+        <input type="text" id="newUsernameInput" placeholder="Enter username..." style="width:100%;padding:12px 16px;border:2px solid #e2e8f0;border-radius:10px;font-size:15px;margin-bottom:12px;transition:all 0.2s;">
+        <button id="saveUsernameBtn" style="width:100%;padding:12px;border:none;border-radius:10px;background:linear-gradient(135deg,#2563eb,#1d4ed8);color:white;font-weight:600;font-size:15px;cursor:pointer;transition:all 0.2s;">
+            <i class="fas fa-save"></i> Save Username
+        </button>
+    </div>
+</div>
+
+<!-- JavaScript Files -->
+<script src="firebase-config.js"></script>
+<script src="auth.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
