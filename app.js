@@ -55,7 +55,7 @@
     let expandedCompany = null;
     let expandedPerson = null;
     let unsubscribe = null;
-    let isUpdating = false;
+    let isSaving = false;
 
     // ============================================================
     // NAVIGATION
@@ -130,6 +130,23 @@
     }
 
     // ============================================================
+    // BUTTON STATE MANAGEMENT
+    // ============================================================
+    function setButtonLoading(button, loading) {
+        if (!button) return;
+        if (loading) {
+            button.disabled = true;
+            button._originalText = button.innerHTML;
+            button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+        } else {
+            button.disabled = false;
+            if (button._originalText) {
+                button.innerHTML = button._originalText;
+            }
+        }
+    }
+
+    // ============================================================
     // FIRESTORE REAL-TIME LISTENER
     // ============================================================
     function setupRealtimeListener() {
@@ -140,13 +157,12 @@
             unsubscribe = null;
         }
 
-        console.log('📡 Setting up real-time listener for:', currentUser.email);
+        console.log('📡 Setting up real-time listener');
         
         const docRef = window.db.collection('users').doc(currentUser.uid);
         
         unsubscribe = docRef.onSnapshot(function(doc) {
-            // Don't update if we're already updating to avoid loops
-            if (isUpdating) return;
+            if (isSaving) return;
             
             if (doc.exists) {
                 const data = doc.data();
@@ -156,13 +172,11 @@
                 
                 userData = data;
                 dataLoaded = true;
-                
                 renderAll();
                 updateSyncStatus(true);
-                console.log('✅ Real-time update received');
             }
         }, function(error) {
-            console.error('❌ Real-time listener error:', error);
+            console.error('❌ Listener error:', error);
             updateSyncStatus(false);
         });
     }
@@ -171,26 +185,16 @@
     // FIRESTORE DATA FUNCTIONS
     // ============================================================
     function getUserDocRef() {
-        if (!currentUser) {
-            console.log('❌ No current user for Firestore');
-            return null;
-        }
+        if (!currentUser) return null;
         return window.db.collection('users').doc(currentUser.uid);
     }
 
     async function loadUserData() {
-        if (!currentUser) {
-            console.log('❌ Cannot load data - no current user');
-            return null;
-        }
-
-        if (isLoading) {
-            console.log('⏳ Already loading data...');
-            return userData;
-        }
+        if (!currentUser) return null;
+        if (isLoading) return userData;
 
         isLoading = true;
-        console.log('📥 Loading user data for:', currentUser.email);
+        console.log('📥 Loading user data');
 
         try {
             const docRef = getUserDocRef();
@@ -208,29 +212,24 @@
                 if (!data.payments) data.payments = [];
                 userData = data;
                 dataLoaded = true;
-                console.log('✅ Data loaded successfully. Companies:', data.companies.length, 'Notes:', data.notes.length, 'Payments:', data.payments.length);
+                console.log('✅ Data loaded');
                 
                 setupRealtimeListener();
                 renderAll();
-                
                 return data;
             } else {
-                console.log('📝 Creating new user document');
                 const newData = { companies: [], notes: [], payments: [] };
                 await docRef.set(newData);
                 userData = newData;
                 dataLoaded = true;
-                console.log('✅ New user data created');
+                console.log('✅ New user created');
                 
                 setupRealtimeListener();
                 renderAll();
-                
                 return newData;
             }
         } catch (err) {
-            console.error('❌ loadUserData error:', err);
-            showError(companyContainer, 'Error loading data: ' + err.message);
-            showError(notesContainer, 'Error loading data: ' + err.message);
+            console.error('❌ load error:', err);
             return null;
         } finally {
             isLoading = false;
@@ -238,38 +237,30 @@
     }
 
     async function saveUserData(data) {
-        if (!currentUser) {
-            console.log('❌ Cannot save - no current user');
-            return false;
-        }
+        if (!currentUser) return false;
+        if (isSaving) return false;
 
-        // Set updating flag to prevent listener from triggering re-render
-        isUpdating = true;
+        isSaving = true;
         
         try {
             const docRef = getUserDocRef();
             if (!docRef) {
-                isUpdating = false;
+                isSaving = false;
                 return false;
             }
             
-            // Update local data immediately
             userData = data;
-            
-            // Re-render UI immediately
             renderAll();
-            updateSyncStatus(true);
             
-            // Save to Firestore in background
             await docRef.set(data, { merge: true });
-            console.log('✅ Data saved successfully');
-            
-            isUpdating = false;
+            updateSyncStatus(true);
+            console.log('✅ Data saved');
+            isSaving = false;
             return true;
         } catch (err) {
-            console.error('❌ saveUserData error:', err);
+            console.error('❌ Save error:', err);
             updateSyncStatus(false);
-            isUpdating = false;
+            isSaving = false;
             return false;
         }
     }
@@ -278,11 +269,7 @@
     // RENDER FUNCTIONS
     // ============================================================
     function renderAll() {
-        if (!userData) {
-            console.log('⚠️ No user data to render');
-            return;
-        }
-        console.log('🔄 Rendering all data...');
+        if (!userData) return;
         renderCompanies(userData.companies || []);
         renderNotes(userData.notes || []);
         renderPayments(userData.payments || []);
@@ -329,12 +316,11 @@
             html += '<div class="payment-group">';
             html += '<div class="payment-group-header" onclick="window.togglePaymentGroup(\'' + person + '\')">';
             html += '<span class="payment-person-name"><i class="fas fa-user"></i> ' + escHtml(person) + '</span>';
-            html += '<span class="payment-total">Total: ' + formatRupees(totalAmount) + ' <i class="fas fa-chevron-' + (isExpanded ? 'up' : 'down') + '" style="font-size:12px;margin-left:4px;"></i></span>';
+            html += '<span class="payment-total">Total: ' + formatRupees(totalAmount) + ' <i class="fas fa-chevron-' + (isExpanded ? 'up' : 'down') + '"></i></span>';
             html += '</div>';
             
             if (isExpanded) {
                 html += '<div class="payment-group-items">';
-                
                 html += '<div class="payment-inline-form">';
                 html += '<div class="payment-inline-row">';
                 html += '<input type="number" id="inline_amount_' + person.replace(/\s/g, '_') + '" placeholder="Amount" class="inline-amount" step="0.01">';
@@ -361,7 +347,7 @@
                     html += '</div>';
                     html += '<div class="payment-actions">';
                     html += '<button class="btn-sm primary" onclick="event.stopPropagation();window.editPayment(\'' + payment.id + '\')"><i class="fas fa-edit"></i> Edit</button>';
-                    html += '<button class="btn-sm danger" onclick="event.stopPropagation();window.deletePayment(\'' + payment.id + '\')" style="background:#fef2f2;color:#dc2626;"><i class="fas fa-trash"></i> Delete</button>';
+                    html += '<button class="btn-sm danger" onclick="event.stopPropagation();window.deletePayment(\'' + payment.id + '\')"><i class="fas fa-trash"></i> Delete</button>';
                     html += '</div>';
                     html += '</div>';
                 });
@@ -385,10 +371,7 @@
     };
 
     window.addInlinePayment = function(person) {
-        if (!userData) {
-            alert('Please login first');
-            return;
-        }
+        if (!userData || isSaving) return;
 
         const personKey = person.replace(/\s/g, '_');
         const amountInput = document.getElementById('inline_amount_' + personKey);
@@ -416,17 +399,14 @@
 
         payments.push(payment);
         userData.payments = payments;
+        amountInput.value = '';
+        purposeInput.value = '';
         
-        // Update UI immediately
         renderAll();
         expandedPerson = person;
         renderAll();
         
-        // Save to Firestore
-        saveUserData(userData).then(() => {
-            amountInput.value = '';
-            purposeInput.value = '';
-        });
+        saveUserData(userData);
     };
 
     window.viewPaymentReceipts = function(paymentId) {
@@ -462,11 +442,8 @@
     };
 
     addPaymentBtn.addEventListener('click', function() {
-        if (!userData) {
-            alert('Please login first');
-            return;
-        }
-
+        if (!userData || isSaving) return;
+        
         const person = newPaymentPerson.value.trim();
         const amount = parseFloat(newPaymentAmount.value);
         const purpose = newPaymentPurpose.value.trim();
@@ -485,6 +462,8 @@
             alert('Please select a date');
             return;
         }
+
+        setButtonLoading(addPaymentBtn, true);
 
         const payments = userData.payments || [];
         
@@ -532,9 +511,11 @@
             }
             if (found) {
                 userData.payments = payments;
-                renderAll();
                 resetPaymentForm();
-                saveUserData(userData);
+                renderAll();
+                saveUserData(userData).then(() => {
+                    setButtonLoading(addPaymentBtn, false);
+                });
             }
         } else {
             const id = generateId();
@@ -550,9 +531,11 @@
             }
             payments.push(payment);
             userData.payments = payments;
-            renderAll();
             resetPaymentForm();
-            saveUserData(userData);
+            renderAll();
+            saveUserData(userData).then(() => {
+                setButtonLoading(addPaymentBtn, false);
+            });
         }
     }
 
@@ -565,6 +548,7 @@
         isEditingPayment = false;
         editingPaymentId = null;
         addPaymentBtn.innerHTML = '<i class="fas fa-plus"></i> Add Payment';
+        setButtonLoading(addPaymentBtn, false);
     }
 
     window.editPayment = function(paymentId) {
@@ -606,7 +590,7 @@
     };
 
     // ============================================================
-    // COMPANY FUNCTIONS - Expandable
+    // COMPANY FUNCTIONS
     // ============================================================
     window.toggleCompany = function(idx) {
         if (expandedCompany === idx) {
@@ -725,31 +709,15 @@
     }
 
     window.deleteCompany = function(idx) {
-        if (!userData) {
-            alert('Please login first');
-            return;
-        }
+        if (!userData || isSaving) return;
         
         const companies = userData.companies || [];
-        if (!companies[idx]) {
-            alert('Company not found');
-            return;
-        }
+        if (!companies[idx]) return;
         
         const companyName = companies[idx].name;
         const transactionCount = (companies[idx].transactions || []).length;
         
-        const message = 'Are you sure you want to delete "' + companyName + '"?\n\n' +
-                        'This will permanently delete:\n' +
-                        '• Company: ' + companyName + '\n' +
-                        '• ' + transactionCount + ' transaction(s)\n\n' +
-                        'This action cannot be undone!';
-        
-        if (!confirm(message)) {
-            return;
-        }
-        
-        if (!confirm('⚠️ FINAL WARNING: Delete "' + companyName + '" permanently?')) {
+        if (!confirm('Delete "' + companyName + '" with ' + transactionCount + ' transaction(s)? This cannot be undone!')) {
             return;
         }
         
@@ -779,16 +747,10 @@
     };
 
     window.editTransaction = function(compIdx, transId) {
-        if (!userData) {
-            alert('Please login first');
-            return;
-        }
+        if (!userData) return;
         
         const companies = userData.companies || [];
-        if (!companies[compIdx]) {
-            alert('Company not found');
-            return;
-        }
+        if (!companies[compIdx]) return;
         
         const transactions = companies[compIdx].transactions || [];
         let transaction = null;
@@ -801,10 +763,7 @@
             }
         }
         
-        if (!transaction) {
-            alert('Transaction not found');
-            return;
-        }
+        if (!transaction) return;
         
         isEditingTransaction = true;
         editingTransactionData = {
@@ -814,9 +773,7 @@
         };
         
         const uploadEl = document.getElementById('billUpload_' + compIdx);
-        if (uploadEl) {
-            uploadEl.classList.add('active');
-        }
+        if (uploadEl) uploadEl.classList.add('active');
         
         const receivedInput = document.getElementById('received_' + compIdx);
         const dueInput = document.getElementById('due_' + compIdx);
@@ -838,16 +795,10 @@
     };
 
     window.addTransaction = function(idx) {
-        if (!userData) {
-            alert('Please login first');
-            return;
-        }
+        if (!userData || isSaving) return;
         
         const companies = userData.companies || [];
-        if (!companies[idx]) {
-            alert('Company not found');
-            return;
-        }
+        if (!companies[idx]) return;
         
         const receivedInput = document.getElementById('received_' + idx);
         const dueInput = document.getElementById('due_' + idx);
@@ -864,6 +815,12 @@
         }
         
         const date = dateInput ? dateInput.value : today;
+        
+        // Disable button to prevent double click
+        if (addBtn) {
+            addBtn.disabled = true;
+            addBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+        }
         
         if (addBtn && addBtn.getAttribute('data-edit') === 'true' && isEditingTransaction && editingTransactionData) {
             const { compIdx, transIndex, transaction } = editingTransactionData;
@@ -892,10 +849,10 @@
                     Promise.all(billPromises).then((billDataArray) => {
                         if (!updatedTransaction.bills) updatedTransaction.bills = [];
                         updatedTransaction.bills = updatedTransaction.bills.concat(billDataArray);
-                        applyTransactionUpdate(idx, transIndex, updatedTransaction);
+                        applyTransactionUpdate(idx, transIndex, updatedTransaction, addBtn);
                     });
                 } else {
-                    applyTransactionUpdate(idx, transIndex, updatedTransaction);
+                    applyTransactionUpdate(idx, transIndex, updatedTransaction, addBtn);
                 }
                 return;
             }
@@ -917,16 +874,22 @@
             }
             
             Promise.all(billPromises).then(() => {
-                saveTransaction(idx, received, due, date, billDataArray);
+                saveTransaction(idx, received, due, date, billDataArray, addBtn);
             });
         } else {
-            saveTransaction(idx, received, due, date, []);
+            saveTransaction(idx, received, due, date, [], addBtn);
         }
     };
 
-    function applyTransactionUpdate(idx, transIndex, updatedTransaction) {
+    function applyTransactionUpdate(idx, transIndex, updatedTransaction, addBtn) {
         const companies = userData.companies || [];
-        if (!companies[idx]) return;
+        if (!companies[idx]) {
+            if (addBtn) {
+                addBtn.disabled = false;
+                addBtn.innerHTML = '<i class="fas fa-check"></i> Add';
+            }
+            return;
+        }
         if (!companies[idx].transactions) companies[idx].transactions = [];
         
         companies[idx].transactions[transIndex] = updatedTransaction;
@@ -934,12 +897,25 @@
         resetTransactionForm(idx);
         isEditingTransaction = false;
         editingTransactionData = null;
+        
+        if (addBtn) {
+            addBtn.disabled = false;
+            addBtn.innerHTML = '<i class="fas fa-check"></i> Add';
+            addBtn.removeAttribute('data-edit');
+        }
+        
         saveUserData(userData);
     }
 
-    function saveTransaction(idx, received, due, date, billDataArray) {
+    function saveTransaction(idx, received, due, date, billDataArray, addBtn) {
         const companies = userData.companies || [];
-        if (!companies[idx]) return;
+        if (!companies[idx]) {
+            if (addBtn) {
+                addBtn.disabled = false;
+                addBtn.innerHTML = '<i class="fas fa-check"></i> Add';
+            }
+            return;
+        }
         if (!companies[idx].transactions) companies[idx].transactions = [];
         
         const id = generateId();
@@ -958,6 +934,12 @@
         expandedCompany = idx;
         renderAll();
         resetTransactionForm(idx);
+        
+        if (addBtn) {
+            addBtn.disabled = false;
+            addBtn.innerHTML = '<i class="fas fa-check"></i> Add';
+        }
+        
         saveUserData(userData);
     }
 
@@ -976,6 +958,7 @@
         
         const addBtn = uploadEl ? uploadEl.querySelector('.btn-add') : null;
         if (addBtn) {
+            addBtn.disabled = false;
             addBtn.innerHTML = '<i class="fas fa-check"></i> Add';
             addBtn.removeAttribute('data-edit');
         }
@@ -998,10 +981,7 @@
     };
 
     window.viewTransaction = function(compIdx, transId) {
-        if (!userData) {
-            alert('Please login first');
-            return;
-        }
+        if (!userData) return;
         const companies = userData.companies || [];
         if (!companies[compIdx]) return;
         
@@ -1058,28 +1038,30 @@
     // ADD COMPANY
     // ============================================================
     addCompanyBtn.addEventListener('click', function() {
+        if (!userData || isSaving) return;
+        
         const name = newCompanyName.value.trim();
         if (!name) {
             alert('Please enter a company name');
             return;
         }
-        if (!userData) {
-            alert('Please login first');
-            return;
-        }
+        
+        setButtonLoading(addCompanyBtn, true);
         
         userData.companies = userData.companies || [];
         userData.companies.push({ name: name, transactions: [] });
         newCompanyName.value = '';
         renderAll();
-        saveUserData(userData);
+        
+        saveUserData(userData).then(() => {
+            setButtonLoading(addCompanyBtn, false);
+        });
     });
 
     // ============================================================
     // NOTE FUNCTIONS
     // ============================================================
     function renderNotes(notes) {
-        console.log('📝 Rendering notes:', notes);
         if (!notesContainer) return;
         
         if (!notes || notes.length === 0) {
@@ -1115,7 +1097,6 @@
                 '</div>';
         }
         notesContainer.innerHTML = html;
-        console.log('✅ Notes rendered:', sortedNotes.length);
     }
 
     window.viewFullNote = function(noteId) {
@@ -1149,10 +1130,7 @@
     }
 
     window.editNote = function(noteId) {
-        if (!userData) {
-            alert('Please login first');
-            return;
-        }
+        if (!userData) return;
         const notes = userData.notes || [];
         const note = getNoteById(notes, noteId);
         if (!note) return;
@@ -1183,10 +1161,7 @@
     };
 
     saveNoteBtn.addEventListener('click', function() {
-        if (!userData) {
-            alert('Please login first');
-            return;
-        }
+        if (!userData || isSaving) return;
         
         const date = noteDate.value;
         const content = noteContent.value.trim();
@@ -1199,6 +1174,8 @@
             alert('Please select a date');
             return;
         }
+        
+        setButtonLoading(saveNoteBtn, true);
         
         const notes = userData.notes || [];
         
@@ -1216,7 +1193,9 @@
                 userData.notes = notes;
                 renderAll();
                 resetNoteForm();
-                saveUserData(userData);
+                saveUserData(userData).then(() => {
+                    setButtonLoading(saveNoteBtn, false);
+                });
             }
         } else {
             const noteId = generateId();
@@ -1224,7 +1203,9 @@
             userData.notes = notes;
             renderAll();
             resetNoteForm();
-            saveUserData(userData);
+            saveUserData(userData).then(() => {
+                setButtonLoading(saveNoteBtn, false);
+            });
         }
     });
 
@@ -1234,6 +1215,7 @@
         isEditingNote = false;
         editingNoteId = null;
         saveNoteBtn.innerHTML = '<i class="fas fa-save"></i> Save';
+        setButtonLoading(saveNoteBtn, false);
     }
 
     clearNoteBtn.addEventListener('click', function() {
@@ -1248,15 +1230,8 @@
     // USER LOGIN HANDLER
     // ============================================================
     window.onUserLoggedIn = async function() {
-        console.log('👤 onUserLoggedIn called');
         currentUser = window.auth.currentUser;
-        
-        if (!currentUser) {
-            console.log('❌ No current user in onUserLoggedIn');
-            return;
-        }
-        
-        console.log('✅ User logged in:', currentUser.email);
+        if (!currentUser) return;
         
         showLoading(companyContainer);
         showLoading(notesContainer);
@@ -1267,12 +1242,9 @@
 
     window.setCurrentUser = function(user) {
         currentUser = user;
-        console.log('👤 Current user set:', user ? user.email : 'null');
     };
 
     window.clearUserData = function() {
-        console.log('🧹 Clearing user data');
-        
         if (unsubscribe) {
             unsubscribe();
             unsubscribe = null;
@@ -1281,12 +1253,7 @@
         currentUser = null;
         userData = null;
         dataLoaded = false;
-        isEditingNote = false;
-        editingNoteId = null;
-        isEditingTransaction = false;
-        editingTransactionData = null;
-        isEditingPayment = false;
-        editingPaymentId = null;
+        isSaving = false;
         expandedCompany = null;
         expandedPerson = null;
         resetNoteForm();
@@ -1307,17 +1274,12 @@
 
     const initialUser = window.auth.currentUser;
     if (initialUser) {
-        console.log('👤 User already logged in:', initialUser.email);
         currentUser = initialUser;
         showLoading(companyContainer);
         showLoading(notesContainer);
         showLoading(paymentContainer);
-        
-        setTimeout(() => {
-            loadUserData();
-        }, 300);
+        setTimeout(() => loadUserData(), 300);
     } else {
-        console.log('👤 No user logged in initially');
         showLoading(companyContainer);
         showLoading(notesContainer);
         showLoading(paymentContainer);
@@ -1325,9 +1287,7 @@
 
     window.auth.onAuthStateChanged(function(user) {
         if (user) {
-            console.log('👤 Auth state changed - user logged in:', user.email);
             currentUser = user;
-            
             if (!dataLoaded) {
                 showLoading(companyContainer);
                 showLoading(notesContainer);
@@ -1335,7 +1295,6 @@
                 loadUserData();
             }
         } else {
-            console.log('👤 Auth state changed - user logged out');
             window.clearUserData();
         }
     });
