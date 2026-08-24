@@ -9,11 +9,13 @@ body {
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
     background: #f1f5f9;
     min-height: 100vh;
+    min-height: 100dvh;
     display: flex;
     align-items: flex-start;
     justify-content: center;
     padding: 0;
     -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
 
 .app-container {
@@ -24,13 +26,17 @@ body {
     box-shadow: none;
     overflow: hidden;
     min-height: 100vh;
+    min-height: 100dvh;
 }
 
-/* Login Screen */
+/* ============================================================
+   LOGIN SCREEN
+   ============================================================ */
 .login-screen {
-    padding: 40px 24px 32px;
+    padding: clamp(30px, 6vw, 50px) clamp(20px, 4vw, 32px) clamp(24px, 5vw, 40px);
     background: white;
     min-height: 100vh;
+    min-height: 100dvh;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -38,28 +44,29 @@ body {
 }
 
 .login-logo {
-    width: 80px;
-    height: 80px;
+    width: clamp(64px, 15vw, 80px);
+    height: clamp(64px, 15vw, 80px);
     background: linear-gradient(135deg, #2563eb, #1d4ed8);
-    border-radius: 24px;
+    border-radius: clamp(18px, 4vw, 24px);
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-bottom: 20px;
+    margin-bottom: clamp(14px, 3vw, 20px);
     box-shadow: 0 8px 30px rgba(37, 99, 235, 0.3);
 }
 
 .login-logo i {
-    font-size: 36px;
+    font-size: clamp(28px, 7vw, 36px);
     color: white;
 }
 
 .login-title {
-    font-size: 28px;
+    font-size: clamp(22px, 5.5vw, 28px);
     font-weight: 800;
     color: #0f172a;
-    margin-bottom: 6px;
+    margin-bottom: 4px;
     letter-spacing: -0.5px;
+    text-align: center;
 }
 
 .login-title span {
@@ -68,8 +75,8 @@ body {
 
 .login-subtitle {
     color: #64748b;
-    font-size: 14px;
-    margin-bottom: 32px;
+    font-size: clamp(12px, 2.8vw, 14px);
+    margin-bottom: clamp(20px, 5vw, 32px);
     display: flex;
     align-items: center;
     gap: 6px;
@@ -80,10 +87,10 @@ body {
     max-width: 400px;
     display: flex;
     flex-direction: column;
-    gap: 14px;
+    gap: clamp(12px, 2.5vw, 16px);
 }
 
-/* Input Group - Base */
+/* Input Group */
 .login-form .input-group {
     position: relative;
     width: 100%;
@@ -91,11 +98,11 @@ body {
 
 .login-form .input-group .input-icon {
     position: absolute;
-    left: 16px;
+    left: clamp(14px, 3vw, 16px);
     top: 50%;
     transform: translateY(-50%);
     color: #cbd5e1;
-    font-size: 18px;
+    font-size: clamp(16px, 3.5vw, 18px);
     z-index: 2;
     pointer-events: none;
     transition: color 0.2s;
@@ -103,14 +110,16 @@ body {
 
 .login-form .input-group input {
     width: 100%;
-    padding: 16px 16px 16px 48px;
+    padding: clamp(14px, 3vw, 16px) clamp(14px, 3vw, 16px) clamp(14px, 3vw, 16px) clamp(40px, 9vw, 48px);
     border: 2px solid #e2e8f0;
-    border-radius: 12px;
-    font-size: 16px;
+    border-radius: clamp(10px, 2vw, 12px);
+    font-size: clamp(15px, 3.2vw, 16px);
     background: #f8fafc;
     transition: all 0.2s;
     color: #0f172a;
     outline: none;
+    -webkit-appearance: none;
+    appearance: none;
 }
 
 .login-form .input-group input:focus {
@@ -131,11 +140,11 @@ body {
 
 .password-group .input-icon {
     position: absolute;
-    left: 16px;
+    left: clamp(14px, 3vw, 16px);
     top: 50%;
     transform: translateY(-50%);
     color: #cbd5e1;
-    font-size: 18px;
+    font-size: clamp(16px, 3.5vw, 18px);
     z-index: 2;
     pointer-events: none;
     transition: color 0.2s;
@@ -143,14 +152,16 @@ body {
 
 .password-group input {
     width: 100%;
-    padding: 16px 52px 16px 48px !important;
+    padding: clamp(14px, 3vw, 16px) clamp(44px, 9vw, 52px) clamp(14px, 3vw, 16px) clamp(40px, 9vw, 48px) !important;
     border: 2px solid #e2e8f0;
-    border-radius: 12px;
-    font-size: 16px;
+    border-radius: clamp(10px, 2vw, 12px);
+    font-size: clamp(15px, 3.2vw, 16px);
     background: #f8fafc;
     transition: all 0.2s;
     color: #0f172a;
     outline: none;
+    -webkit-appearance: none;
+    appearance: none;
 }
 
 .password-group input:focus {
@@ -165,22 +176,23 @@ body {
 
 .password-toggle {
     position: absolute;
-    right: 12px;
+    right: clamp(10px, 2.5vw, 14px);
     top: 50%;
     transform: translateY(-50%);
     background: transparent;
     border: none;
     color: #cbd5e1;
     cursor: pointer;
-    padding: 6px 8px;
+    padding: clamp(4px, 1.5vw, 8px);
     border-radius: 8px;
     transition: all 0.2s;
-    font-size: 18px;
+    font-size: clamp(16px, 3.5vw, 18px);
     display: flex;
     align-items: center;
     justify-content: center;
     z-index: 3;
     line-height: 1;
+    touch-action: manipulation;
 }
 
 .password-toggle:hover {
@@ -197,7 +209,7 @@ body {
 }
 
 .password-toggle i {
-    font-size: 18px;
+    font-size: clamp(16px, 3.5vw, 18px);
     pointer-events: none;
 }
 
@@ -205,25 +217,27 @@ body {
     color: #2563eb;
 }
 
+/* Login Actions */
 .login-actions {
     display: flex;
-    gap: 12px;
-    margin-top: 8px;
+    gap: clamp(10px, 2vw, 12px);
+    margin-top: 4px;
 }
 
 .login-actions button {
     flex: 1;
-    padding: 16px;
+    padding: clamp(14px, 3vw, 16px);
     border: none;
-    border-radius: 12px;
+    border-radius: clamp(10px, 2vw, 12px);
     font-weight: 600;
-    font-size: 16px;
+    font-size: clamp(14px, 3vw, 16px);
     cursor: pointer;
     transition: all 0.2s;
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 8px;
+    touch-action: manipulation;
 }
 
 .login-actions .btn-primary {
@@ -247,16 +261,19 @@ body {
 
 .login-error {
     color: #dc2626;
-    font-size: 13px;
-    margin-top: 6px;
+    font-size: clamp(12px, 2.5vw, 13px);
+    margin-top: 4px;
     min-height: 20px;
     text-align: center;
 }
 
-/* Main App */
+/* ============================================================
+   MAIN APP
+   ============================================================ */
 .main-app {
     display: none;
     min-height: 100vh;
+    min-height: 100dvh;
 }
 
 .main-app.active {
@@ -265,7 +282,7 @@ body {
 
 /* Top Bar */
 .top-bar {
-    padding: 16px 20px 14px;
+    padding: clamp(12px, 2.5vw, 16px) clamp(14px, 3vw, 20px);
     background: white;
     border-bottom: 1px solid #f1f5f9;
     display: flex;
@@ -277,19 +294,20 @@ body {
     background: rgba(255, 255, 255, 0.95);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
+    min-height: clamp(56px, 12vw, 68px);
 }
 
 .app-brand {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: clamp(6px, 1.5vw, 10px);
 }
 
 .app-brand .brand-icon {
-    width: 38px;
-    height: 38px;
+    width: clamp(30px, 7vw, 38px);
+    height: clamp(30px, 7vw, 38px);
     background: linear-gradient(135deg, #2563eb, #1d4ed8);
-    border-radius: 12px;
+    border-radius: clamp(8px, 2vw, 12px);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -297,11 +315,11 @@ body {
 
 .app-brand .brand-icon i {
     color: white;
-    font-size: 18px;
+    font-size: clamp(14px, 3.5vw, 18px);
 }
 
 .app-brand .brand-name {
-    font-size: 18px;
+    font-size: clamp(15px, 3.5vw, 18px);
     font-weight: 700;
     color: #0f172a;
 }
@@ -313,35 +331,31 @@ body {
 .user-area {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: clamp(4px, 1.5vw, 8px);
 }
 
-/* ============================================================
-   USER INFO & USERNAME EDIT
-   ============================================================ */
 .user-info {
     display: flex;
     flex-direction: column;
     align-items: flex-end;
     gap: 1px;
-    margin-right: 4px;
+    margin-right: 2px;
 }
 
 .user-display-name {
-    font-size: 13px;
+    font-size: clamp(11px, 2.5vw, 13px);
     font-weight: 600;
     color: #0f172a;
-    max-width: 100px;
+    max-width: clamp(60px, 20vw, 100px);
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    cursor: default;
 }
 
 .user-email-small {
-    font-size: 10px;
+    font-size: clamp(8px, 2vw, 10px);
     color: #94a3b8;
-    max-width: 100px;
+    max-width: clamp(60px, 20vw, 100px);
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -352,12 +366,13 @@ body {
     border: none;
     color: #94a3b8;
     cursor: pointer;
-    padding: 4px 6px;
+    padding: 4px 4px;
     border-radius: 6px;
     transition: all 0.2s;
     display: flex;
     align-items: center;
     justify-content: center;
+    touch-action: manipulation;
 }
 
 .btn-edit-username:hover {
@@ -370,19 +385,19 @@ body {
 }
 
 .btn-edit-username i {
-    font-size: 12px;
+    font-size: clamp(10px, 2.5vw, 12px);
 }
 
 .user-avatar {
-    width: 34px;
-    height: 34px;
+    width: clamp(26px, 6vw, 34px);
+    height: clamp(26px, 6vw, 34px);
     background: #dbeafe;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
     color: #2563eb;
-    font-size: 14px;
+    font-size: clamp(11px, 2.8vw, 14px);
     flex-shrink: 0;
 }
 
@@ -390,11 +405,12 @@ body {
     background: transparent;
     border: none;
     color: #94a3b8;
-    font-size: 18px;
+    font-size: clamp(16px, 3.5vw, 18px);
     cursor: pointer;
-    padding: 6px;
+    padding: 4px 6px;
     border-radius: 8px;
     transition: all 0.2s;
+    touch-action: manipulation;
 }
 
 .btn-logout:active {
@@ -410,19 +426,25 @@ body {
     background: white;
     border-bottom: 1px solid #f1f5f9;
     position: sticky;
-    top: 68px;
+    top: clamp(56px, 12vw, 68px);
     z-index: 99;
     background: rgba(255, 255, 255, 0.95);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+.nav-tabs::-webkit-scrollbar {
+    display: none;
 }
 
 .nav-tab {
     flex: 1;
-    padding: 14px 8px;
+    padding: clamp(10px, 2.5vw, 14px) clamp(6px, 1.5vw, 12px);
     border: none;
     background: transparent;
-    font-size: 13px;
+    font-size: clamp(11px, 2.5vw, 13px);
     font-weight: 500;
     color: #64748b;
     cursor: pointer;
@@ -431,13 +453,14 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 6px;
+    gap: clamp(4px, 1vw, 6px);
     text-align: center;
     white-space: nowrap;
+    touch-action: manipulation;
 }
 
 .nav-tab i {
-    font-size: 15px;
+    font-size: clamp(13px, 3vw, 15px);
 }
 
 .nav-tab.active {
@@ -452,7 +475,7 @@ body {
 /* Content */
 .tab-content {
     display: none;
-    padding: 16px 16px 20px;
+    padding: clamp(12px, 2.5vw, 16px);
     animation: fadeSlideIn 0.25s ease;
 }
 
@@ -468,13 +491,13 @@ body {
 /* Cards */
 .card {
     background: white;
-    border-radius: 16px;
+    border-radius: clamp(12px, 2.5vw, 16px);
     border: 1px solid #e2e8f0;
     overflow: hidden;
 }
 
 .card-header {
-    padding: 14px 16px;
+    padding: clamp(10px, 2.5vw, 14px) clamp(12px, 3vw, 16px);
     border-bottom: 1px solid #f1f5f9;
     display: flex;
     align-items: center;
@@ -482,22 +505,22 @@ body {
 }
 
 .card-header h3 {
-    font-size: 15px;
+    font-size: clamp(13px, 3vw, 15px);
     font-weight: 600;
     color: #0f172a;
 }
 
 .card-header .badge {
-    font-size: 11px;
+    font-size: clamp(10px, 2.2vw, 11px);
     font-weight: 500;
-    padding: 2px 12px;
+    padding: 2px 10px;
     border-radius: 9999px;
     background: #f1f5f9;
     color: #64748b;
 }
 
 .card-body {
-    padding: 14px 16px;
+    padding: clamp(10px, 2.5vw, 14px) clamp(10px, 2.5vw, 16px);
 }
 
 /* ============================================================
@@ -506,17 +529,18 @@ body {
 .company-list {
     display: flex;
     flex-direction: column;
-    gap: 12px;
-    max-height: 420px;
+    gap: clamp(10px, 2vw, 12px);
+    max-height: clamp(300px, 60vh, 420px);
     overflow-y: auto;
     padding-right: 4px;
+    -webkit-overflow-scrolling: touch;
 }
 
 .company-item {
     position: relative;
     background: #f8fafc;
-    border-radius: 12px;
-    padding: 14px 44px 14px 16px;
+    border-radius: clamp(10px, 2vw, 12px);
+    padding: clamp(10px, 2.5vw, 14px) clamp(36px, 8vw, 44px) clamp(10px, 2.5vw, 14px) clamp(12px, 3vw, 16px);
     border: 1px solid #e2e8f0;
 }
 
@@ -526,10 +550,10 @@ body {
 
 .company-delete {
     position: absolute;
-    top: 10px;
-    right: 12px;
+    top: clamp(6px, 1.5vw, 10px);
+    right: clamp(8px, 2vw, 12px);
     color: #94a3b8;
-    font-size: 14px;
+    font-size: clamp(12px, 3vw, 14px);
     cursor: pointer;
     padding: 4px 6px;
     border-radius: 6px;
@@ -538,6 +562,7 @@ body {
     z-index: 5;
     opacity: 0.5;
     line-height: 1;
+    touch-action: manipulation;
 }
 
 .company-delete:hover {
@@ -553,12 +578,13 @@ body {
 .company-header {
     display: flex;
     flex-direction: column;
-    gap: 6px;
+    gap: clamp(4px, 1vw, 6px);
     margin-bottom: 4px;
     cursor: pointer;
     padding: 4px 0;
     border-radius: 8px;
     transition: background 0.2s;
+    touch-action: manipulation;
 }
 
 .company-header:hover {
@@ -571,32 +597,32 @@ body {
 
 .company-name {
     font-weight: 600;
-    font-size: 15px;
+    font-size: clamp(13px, 3vw, 15px);
     color: #0f172a;
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 6px;
 }
 
 .company-name i {
     color: #2563eb;
-    font-size: 14px;
+    font-size: clamp(12px, 2.8vw, 14px);
 }
 
 .company-stats {
     display: flex;
-    gap: 6px;
+    gap: clamp(4px, 1vw, 6px);
     flex-wrap: wrap;
     align-items: center;
 }
 
 .stat {
-    font-size: 11px;
+    font-size: clamp(9px, 2.2vw, 11px);
     font-weight: 500;
     display: flex;
     align-items: center;
     gap: 3px;
-    padding: 2px 8px;
+    padding: 2px clamp(4px, 1.5vw, 8px);
     border-radius: 6px;
     white-space: nowrap;
 }
@@ -622,7 +648,7 @@ body {
 .toggle-icon {
     background: transparent !important;
     padding: 0 4px !important;
-    font-size: 14px !important;
+    font-size: clamp(12px, 2.8vw, 14px) !important;
     color: #94a3b8 !important;
     border: none !important;
     margin-left: auto;
@@ -630,22 +656,23 @@ body {
 
 .company-actions {
     display: flex;
-    gap: 8px;
+    gap: 6px;
     margin-top: 4px;
     flex-wrap: wrap;
 }
 
 .btn-sm {
-    padding: 6px 14px;
+    padding: clamp(4px, 1.5vw, 6px) clamp(10px, 2.5vw, 14px);
     border: none;
     border-radius: 9999px;
-    font-size: 12px;
+    font-size: clamp(10px, 2.5vw, 12px);
     font-weight: 500;
     cursor: pointer;
     transition: all 0.2s;
     display: flex;
     align-items: center;
-    gap: 6px;
+    gap: 4px;
+    touch-action: manipulation;
 }
 
 .btn-sm:active {
@@ -670,9 +697,9 @@ body {
     background: #fecaca;
 }
 
-/* Transactions Container - Expandable */
+/* Transactions Container */
 .transactions-container {
-    margin-top: 8px;
+    margin-top: clamp(6px, 1.5vw, 8px);
     padding: 0 4px;
     transition: all 0.3s ease;
 }
@@ -684,13 +711,14 @@ body {
 
 .transactions-container.collapsed {
     display: block;
-    padding: 6px 12px;
+    padding: clamp(4px, 1.5vw, 6px) clamp(8px, 2vw, 12px);
     background: #f1f5f9;
     border-radius: 8px;
-    margin-top: 6px;
+    margin-top: 4px;
     text-align: center;
     cursor: pointer;
     transition: all 0.2s;
+    touch-action: manipulation;
 }
 
 .transactions-container.collapsed:hover {
@@ -698,13 +726,13 @@ body {
 }
 
 .transaction-count {
-    font-size: 12px;
+    font-size: clamp(10px, 2.5vw, 12px);
     color: #64748b;
     font-weight: 500;
 }
 
 .no-transactions {
-    font-size: 12px;
+    font-size: clamp(10px, 2.5vw, 12px);
     color: #94a3b8;
     padding: 8px 0;
     display: block;
@@ -716,23 +744,22 @@ body {
     to { opacity: 1; transform: translateY(0); }
 }
 
-/* Transactions List */
 .transactions-list {
     display: flex;
     flex-wrap: wrap;
-    gap: 6px;
+    gap: clamp(4px, 1.5vw, 6px);
     padding: 4px 0 8px;
 }
 
 /* Bill Upload */
 .bill-upload {
     margin-top: 10px;
-    padding: 12px 14px;
+    padding: clamp(8px, 2vw, 12px);
     background: #f8fafc;
-    border-radius: 12px;
+    border-radius: clamp(10px, 2vw, 12px);
     display: none;
     flex-wrap: wrap;
-    gap: 8px;
+    gap: 6px;
     align-items: center;
 }
 
@@ -751,23 +778,23 @@ body {
 }
 
 .bill-upload .amount-group .label-icon {
-    font-size: 11px;
+    font-size: clamp(9px, 2.2vw, 11px);
     font-weight: 500;
     color: #64748b;
 }
 
 .bill-upload .amount-group input {
-    width: 70px;
+    width: clamp(55px, 15vw, 70px);
     padding: 6px 4px;
     border: none;
-    font-size: 13px;
+    font-size: clamp(11px, 2.8vw, 13px);
     background: transparent;
     color: #0f172a;
 }
 
 .bill-upload .amount-group input::placeholder {
     color: #94a3b8;
-    font-size: 12px;
+    font-size: clamp(10px, 2.5vw, 12px);
 }
 
 .bill-upload .amount-group input:focus {
@@ -775,32 +802,33 @@ body {
 }
 
 .bill-upload input[type="date"] {
-    padding: 6px 12px;
+    padding: clamp(4px, 1.5vw, 6px) clamp(8px, 2vw, 12px);
     border: 1px solid #e2e8f0;
     border-radius: 9999px;
-    font-size: 12px;
+    font-size: clamp(10px, 2.5vw, 12px);
     background: white;
-    width: 130px;
+    width: clamp(100px, 25vw, 130px);
 }
 
 .bill-upload input[type="file"] {
-    padding: 5px 8px;
+    padding: 4px 6px;
     border: 1px solid #e2e8f0;
     border-radius: 9999px;
-    font-size: 11px;
+    font-size: clamp(9px, 2.2vw, 11px);
     background: white;
-    max-width: 100px;
+    max-width: clamp(70px, 20vw, 100px);
 }
 
 .bill-upload .btn-add {
-    padding: 6px 16px;
+    padding: clamp(4px, 1.5vw, 6px) clamp(10px, 2.5vw, 16px);
     border: none;
     border-radius: 9999px;
     background: #16a34a;
     color: white;
     font-weight: 600;
-    font-size: 12px;
+    font-size: clamp(10px, 2.5vw, 12px);
     cursor: pointer;
+    touch-action: manipulation;
 }
 
 .bill-upload .btn-add:active {
@@ -808,14 +836,15 @@ body {
 }
 
 .bill-upload .btn-cancel {
-    padding: 6px 14px;
+    padding: clamp(4px, 1.5vw, 6px) clamp(8px, 2vw, 14px);
     border: none;
     border-radius: 9999px;
     background: #e2e8f0;
     color: #64748b;
     font-weight: 500;
-    font-size: 12px;
+    font-size: clamp(10px, 2.5vw, 12px);
     cursor: pointer;
+    touch-action: manipulation;
 }
 
 .bill-upload .btn-cancel:active {
@@ -823,22 +852,23 @@ body {
 }
 
 .currency-label {
-    font-size: 12px;
+    font-size: clamp(10px, 2.5vw, 12px);
     font-weight: 500;
     color: #64748b;
 }
 
 .transaction-tag {
-    font-size: 11px;
+    font-size: clamp(9px, 2.2vw, 11px);
     background: white;
-    padding: 4px 12px;
+    padding: clamp(2px, 1vw, 4px) clamp(8px, 2vw, 12px);
     border-radius: 9999px;
     border: 1px solid #e2e8f0;
     display: inline-flex;
     align-items: center;
-    gap: 6px;
+    gap: clamp(4px, 1vw, 6px);
     cursor: pointer;
     transition: all 0.2s;
+    touch-action: manipulation;
 }
 
 .transaction-tag:active {
@@ -848,7 +878,7 @@ body {
 .transaction-tag .remove {
     color: #94a3b8;
     cursor: pointer;
-    font-size: 11px;
+    font-size: clamp(9px, 2.2vw, 11px);
 }
 
 .transaction-tag .remove:active {
@@ -869,17 +899,17 @@ body {
 .add-company {
     display: flex;
     gap: 8px;
-    margin-top: 12px;
+    margin-top: clamp(10px, 2vw, 12px);
     flex-wrap: wrap;
 }
 
 .add-company input {
     flex: 1;
-    min-width: 140px;
-    padding: 12px 16px;
+    min-width: clamp(100px, 30vw, 140px);
+    padding: clamp(10px, 2.5vw, 12px) clamp(12px, 3vw, 16px);
     border: 2px solid #e2e8f0;
-    border-radius: 12px;
-    font-size: 14px;
+    border-radius: clamp(10px, 2vw, 12px);
+    font-size: clamp(13px, 3vw, 14px);
     background: #f8fafc;
     transition: all 0.2s;
 }
@@ -891,16 +921,17 @@ body {
 }
 
 .add-company button {
-    padding: 12px 20px;
+    padding: clamp(10px, 2.5vw, 12px) clamp(16px, 4vw, 20px);
     border: none;
-    border-radius: 12px;
+    border-radius: clamp(10px, 2vw, 12px);
     background: linear-gradient(135deg, #2563eb, #1d4ed8);
     color: white;
     font-weight: 600;
-    font-size: 14px;
+    font-size: clamp(12px, 3vw, 14px);
     cursor: pointer;
     transition: all 0.2s;
     white-space: nowrap;
+    touch-action: manipulation;
 }
 
 .add-company button:active {
@@ -912,10 +943,10 @@ body {
    ============================================================ */
 .note-input {
     background: #f8fafc;
-    border-radius: 12px;
-    padding: 14px;
+    border-radius: clamp(10px, 2vw, 12px);
+    padding: clamp(10px, 2.5vw, 14px);
     border: 1px solid #e2e8f0;
-    margin-bottom: 14px;
+    margin-bottom: clamp(10px, 2.5vw, 14px);
 }
 
 .note-input .date-row {
@@ -926,27 +957,27 @@ body {
 }
 
 .note-input .date-row label {
-    font-size: 13px;
+    font-size: clamp(11px, 2.8vw, 13px);
     font-weight: 500;
     color: #64748b;
 }
 
 .note-input .date-row input[type="date"] {
-    padding: 8px 14px;
+    padding: clamp(6px, 1.5vw, 8px) clamp(10px, 2.5vw, 14px);
     border: 1px solid #e2e8f0;
     border-radius: 9999px;
-    font-size: 13px;
+    font-size: clamp(11px, 2.8vw, 13px);
     background: white;
     flex: 1;
 }
 
 .note-input textarea {
     width: 100%;
-    min-height: 100px;
+    min-height: clamp(80px, 20vh, 100px);
     border: 1px solid #e2e8f0;
-    border-radius: 12px;
-    padding: 12px 14px;
-    font-size: 14px;
+    border-radius: clamp(10px, 2vw, 12px);
+    padding: clamp(10px, 2.5vw, 12px) clamp(10px, 2.5vw, 14px);
+    font-size: clamp(13px, 3vw, 14px);
     resize: vertical;
     background: white;
     line-height: 1.6;
@@ -967,15 +998,16 @@ body {
 }
 
 .note-input .note-actions button {
-    padding: 10px 20px;
+    padding: clamp(8px, 2vw, 10px) clamp(16px, 4vw, 20px);
     border: none;
     border-radius: 9999px;
     font-weight: 600;
-    font-size: 13px;
+    font-size: clamp(11px, 2.8vw, 13px);
     cursor: pointer;
     transition: all 0.2s;
     flex: 1;
-    min-width: 80px;
+    min-width: 60px;
+    touch-action: manipulation;
 }
 
 .note-input .note-actions button:active {
@@ -997,21 +1029,23 @@ body {
     display: flex;
     flex-direction: column;
     gap: 10px;
-    max-height: 380px;
+    max-height: clamp(250px, 50vh, 380px);
     overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
 }
 
 .note-item {
     background: #f8fafc;
-    border-radius: 12px;
-    padding: 14px 16px;
+    border-radius: clamp(10px, 2vw, 12px);
+    padding: clamp(10px, 2.5vw, 14px) clamp(12px, 3vw, 16px);
     border: 1px solid #e2e8f0;
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
-    gap: 12px;
+    gap: clamp(8px, 2vw, 12px);
     cursor: pointer;
     transition: all 0.2s;
+    touch-action: manipulation;
 }
 
 .note-item:hover {
@@ -1025,11 +1059,11 @@ body {
 }
 
 .note-item .note-date {
-    font-size: 11px;
+    font-size: clamp(9px, 2.2vw, 11px);
     font-weight: 600;
     color: #2563eb;
     background: #dbeafe;
-    padding: 2px 12px;
+    padding: 2px 10px;
     border-radius: 9999px;
     display: inline-block;
     margin-bottom: 4px;
@@ -1037,14 +1071,14 @@ body {
 
 .note-item .note-title {
     font-weight: 600;
-    font-size: 15px;
+    font-size: clamp(13px, 3vw, 15px);
     color: #0f172a;
     margin-bottom: 2px;
     word-break: break-word;
 }
 
 .note-item .note-preview {
-    font-size: 13px;
+    font-size: clamp(11px, 2.8vw, 13px);
     color: #64748b;
     line-height: 1.4;
     max-height: 36px;
@@ -1054,19 +1088,20 @@ body {
 
 .note-item .note-actions {
     display: flex;
-    gap: 6px;
+    gap: 4px;
     flex-shrink: 0;
 }
 
 .note-item .note-actions button {
     background: transparent;
     border: none;
-    font-size: 16px;
+    font-size: clamp(14px, 3.5vw, 16px);
     cursor: pointer;
-    padding: 6px;
+    padding: 4px 6px;
     color: #94a3b8;
     transition: all 0.2s;
     border-radius: 8px;
+    touch-action: manipulation;
 }
 
 .note-item .note-actions button:hover {
@@ -1088,10 +1123,10 @@ body {
    ============================================================ */
 .payment-input {
     background: #f8fafc;
-    border-radius: 12px;
-    padding: 14px;
+    border-radius: clamp(10px, 2vw, 12px);
+    padding: clamp(10px, 2.5vw, 14px);
     border: 1px solid #e2e8f0;
-    margin-bottom: 14px;
+    margin-bottom: clamp(10px, 2.5vw, 14px);
 }
 
 .payment-row {
@@ -1105,10 +1140,10 @@ body {
 .payment-row input[type="text"],
 .payment-row input[type="number"] {
     width: 100%;
-    padding: 10px 14px;
+    padding: clamp(8px, 2vw, 10px) clamp(10px, 2.5vw, 14px);
     border: 1px solid #e2e8f0;
-    border-radius: 10px;
-    font-size: 14px;
+    border-radius: clamp(8px, 1.8vw, 10px);
+    font-size: clamp(13px, 3vw, 14px);
     background: white;
     transition: all 0.2s;
 }
@@ -1119,7 +1154,15 @@ body {
     box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.08);
 }
 
-.payment-row .amount-group {
+.payment-row-flex {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.payment-row-flex .amount-group {
+    flex: 1;
+    min-width: 100px;
     display: flex;
     align-items: center;
     gap: 8px;
@@ -1129,39 +1172,56 @@ body {
     border-radius: 10px;
 }
 
-.payment-row .amount-group input {
+.payment-row-flex .amount-group input {
     flex: 1;
-    padding: 10px 0;
+    padding: clamp(8px, 2vw, 10px) 0;
     border: none;
-    font-size: 14px;
+    font-size: clamp(13px, 3vw, 14px);
     background: transparent;
 }
 
-.payment-row .amount-group input:focus {
+.payment-row-flex .amount-group input:focus {
     outline: none;
     box-shadow: none;
 }
 
-.payment-row .amount-group .currency-label {
-    font-size: 14px;
+.payment-row-flex .amount-group .currency-label {
+    font-size: clamp(12px, 3vw, 14px);
     font-weight: 500;
     color: #64748b;
 }
 
-.payment-row input[type="date"] {
-    width: 100%;
-    padding: 10px 14px;
+.payment-date-input {
+    flex: 1;
+    min-width: 100px;
+    padding: clamp(8px, 2vw, 10px) clamp(10px, 2.5vw, 14px);
     border: 1px solid #e2e8f0;
     border-radius: 10px;
-    font-size: 14px;
+    font-size: clamp(13px, 3vw, 14px);
     background: white;
     transition: all 0.2s;
 }
 
-.payment-row input[type="date"]:focus {
+.payment-date-input:focus {
     outline: none;
     border-color: #2563eb;
     box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.08);
+}
+
+.payment-row input[type="file"] {
+    padding: clamp(6px, 1.5vw, 8px);
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    width: 100%;
+    font-size: clamp(11px, 2.8vw, 13px);
+    background: white;
+}
+
+.file-hint {
+    font-size: clamp(9px, 2.2vw, 11px);
+    color: #94a3b8;
+    display: block;
+    margin-top: 4px;
 }
 
 .payment-actions-row {
@@ -1172,29 +1232,30 @@ body {
 
 .btn-add-payment {
     flex: 1;
-    padding: 12px 20px;
+    padding: clamp(10px, 2.5vw, 12px) clamp(16px, 4vw, 20px);
     border: none;
     border-radius: 10px;
     background: linear-gradient(135deg, #2563eb, #1d4ed8);
     color: white;
     font-weight: 600;
-    font-size: 14px;
+    font-size: clamp(13px, 3vw, 14px);
     cursor: pointer;
     transition: all 0.2s;
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 8px;
+    touch-action: manipulation;
 }
 
 .btn-add-payment:active {
     transform: scale(0.97);
 }
 
-/* Payment Groups - Card View */
+/* Payment Groups */
 .payment-group {
     background: #f8fafc;
-    border-radius: 12px;
+    border-radius: clamp(10px, 2vw, 12px);
     border: 1px solid #e2e8f0;
     margin-bottom: 10px;
     overflow: hidden;
@@ -1205,11 +1266,12 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 14px 18px;
+    padding: clamp(10px, 2.5vw, 14px) clamp(12px, 3vw, 18px);
     background: white;
     cursor: pointer;
     transition: all 0.2s;
     user-select: none;
+    touch-action: manipulation;
 }
 
 .payment-group-header:hover {
@@ -1222,24 +1284,24 @@ body {
 
 .payment-person-name {
     font-weight: 600;
-    font-size: 16px;
+    font-size: clamp(14px, 3.5vw, 16px);
     color: #0f172a;
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 8px;
 }
 
 .payment-person-name i {
     color: #2563eb;
-    font-size: 18px;
+    font-size: clamp(15px, 3.5vw, 18px);
 }
 
 .payment-total {
     font-weight: 700;
-    font-size: 15px;
+    font-size: clamp(12px, 3vw, 15px);
     color: #2563eb;
     background: #dbeafe;
-    padding: 4px 14px;
+    padding: clamp(2px, 1vw, 4px) clamp(8px, 2vw, 14px);
     border-radius: 9999px;
     display: flex;
     align-items: center;
@@ -1247,22 +1309,21 @@ body {
 }
 
 .payment-total i {
-    font-size: 12px;
+    font-size: clamp(10px, 2.5vw, 12px);
     transition: transform 0.3s ease;
 }
 
-/* Expanded Content */
+/* Payment Items inside expanded view */
 .payment-group-items {
-    padding: 12px 16px 16px;
+    padding: clamp(8px, 2vw, 12px) clamp(10px, 2.5vw, 16px) clamp(10px, 2.5vw, 16px);
     border-top: 1px solid #e2e8f0;
     animation: slideDown 0.25s ease;
 }
 
-/* Inline Add Form */
 .payment-inline-form {
     background: #f1f5f9;
     border-radius: 10px;
-    padding: 12px;
+    padding: clamp(8px, 2vw, 12px);
     margin-bottom: 12px;
 }
 
@@ -1274,13 +1335,13 @@ body {
 }
 
 .payment-inline-row input {
-    padding: 8px 12px;
+    padding: clamp(6px, 1.5vw, 8px) clamp(8px, 2vw, 12px);
     border: 1px solid #e2e8f0;
     border-radius: 8px;
-    font-size: 13px;
+    font-size: clamp(11px, 2.8vw, 13px);
     background: white;
     flex: 1;
-    min-width: 80px;
+    min-width: 60px;
 }
 
 .payment-inline-row input:focus {
@@ -1290,42 +1351,42 @@ body {
 }
 
 .payment-inline-row .inline-amount {
-    min-width: 100px;
+    min-width: 80px;
     max-width: 140px;
 }
 
 .payment-inline-row .inline-date {
-    min-width: 120px;
+    min-width: 100px;
     max-width: 150px;
 }
 
 .payment-inline-row .inline-purpose {
-    min-width: 120px;
+    min-width: 100px;
     flex: 2;
 }
 
 .btn-add-inline {
-    padding: 8px 16px;
+    padding: clamp(6px, 1.5vw, 8px) clamp(12px, 3vw, 16px);
     border: none;
     border-radius: 8px;
     background: linear-gradient(135deg, #2563eb, #1d4ed8);
     color: white;
     font-weight: 600;
-    font-size: 13px;
+    font-size: clamp(11px, 2.8vw, 13px);
     cursor: pointer;
     transition: all 0.2s;
     white-space: nowrap;
+    touch-action: manipulation;
 }
 
 .btn-add-inline:active {
     transform: scale(0.95);
 }
 
-/* Payment Items inside expanded view */
 .payment-group-items .payment-item {
     background: white;
     border-radius: 10px;
-    padding: 12px 16px;
+    padding: clamp(8px, 2vw, 12px) clamp(10px, 2.5vw, 16px);
     border: 1px solid #e2e8f0;
     margin-bottom: 8px;
 }
@@ -1343,12 +1404,12 @@ body {
 
 .payment-group-items .payment-amount {
     font-weight: 700;
-    font-size: 16px;
+    font-size: clamp(14px, 3.5vw, 16px);
     color: #dc2626;
 }
 
 .payment-group-items .payment-date {
-    font-size: 12px;
+    font-size: clamp(10px, 2.5vw, 12px);
     color: #64748b;
     display: flex;
     align-items: center;
@@ -1357,9 +1418,9 @@ body {
 
 .payment-group-items .payment-details {
     display: flex;
-    gap: 12px;
+    gap: 10px;
     flex-wrap: wrap;
-    font-size: 12px;
+    font-size: clamp(10px, 2.5vw, 12px);
     color: #64748b;
     margin-bottom: 6px;
 }
@@ -1393,36 +1454,36 @@ body {
    ============================================================ */
 .empty-state {
     text-align: center;
-    padding: 32px 0;
+    padding: clamp(20px, 5vw, 32px) 0;
     color: #94a3b8;
 }
 
 .empty-state i {
-    font-size: 48px;
+    font-size: clamp(36px, 10vw, 48px);
     display: block;
     margin-bottom: 12px;
     opacity: 0.4;
 }
 
 .empty-state p {
-    font-size: 14px;
+    font-size: clamp(12px, 3vw, 14px);
 }
 
 .no-notes {
     text-align: center;
-    padding: 32px 0;
+    padding: clamp(20px, 5vw, 32px) 0;
     color: #94a3b8;
 }
 
 .no-notes i {
-    font-size: 44px;
+    font-size: clamp(32px, 8vw, 44px);
     display: block;
     margin-bottom: 12px;
     opacity: 0.4;
 }
 
 .no-notes p {
-    font-size: 14px;
+    font-size: clamp(12px, 3vw, 14px);
 }
 
 /* ============================================================
@@ -1451,7 +1512,7 @@ body {
 .modal-content {
     background: white;
     border-radius: 16px;
-    padding: 28px;
+    padding: clamp(20px, 5vw, 28px);
     max-width: 440px;
     width: 100%;
     max-height: 85vh;
@@ -1475,6 +1536,7 @@ body {
     border: none;
     background: transparent;
     padding: 4px 10px;
+    touch-action: manipulation;
 }
 
 .modal-content img {
@@ -1486,7 +1548,7 @@ body {
 .modal-details p {
     padding: 6px 0;
     border-bottom: 1px solid #f1f5f9;
-    font-size: 14px;
+    font-size: clamp(13px, 3vw, 14px);
 }
 
 .modal-details strong {
@@ -1496,10 +1558,38 @@ body {
 }
 
 /* Username Modal */
+#usernameModal .modal-content {
+    max-width: 360px;
+}
+
+#usernameModal .modal-content input {
+    width: 100%;
+    padding: clamp(10px, 2.5vw, 12px) clamp(12px, 3vw, 16px);
+    border: 2px solid #e2e8f0;
+    border-radius: 10px;
+    font-size: clamp(14px, 3.5vw, 15px);
+    margin-bottom: 12px;
+    transition: all 0.2s;
+}
+
 #usernameModal .modal-content input:focus {
     outline: none;
     border-color: #2563eb;
     box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+#usernameModal .modal-content button {
+    width: 100%;
+    padding: clamp(10px, 2.5vw, 12px);
+    border: none;
+    border-radius: 10px;
+    background: linear-gradient(135deg, #2563eb, #1d4ed8);
+    color: white;
+    font-weight: 600;
+    font-size: clamp(14px, 3.5vw, 15px);
+    cursor: pointer;
+    transition: all 0.2s;
+    touch-action: manipulation;
 }
 
 #usernameModal .modal-content button:hover {
@@ -1549,7 +1639,7 @@ body {
 
 .text-muted {
     color: #94a3b8;
-    font-size: 13px;
+    font-size: clamp(11px, 2.8vw, 13px);
 }
 
 .mt-6 { margin-top: 6px; }
@@ -1568,7 +1658,7 @@ body {
 
 /* Sync status */
 .sync-status {
-    font-size: 11px;
+    font-size: clamp(9px, 2.2vw, 11px);
     color: #94a3b8;
     display: flex;
     align-items: center;
@@ -1581,12 +1671,12 @@ body {
 
 .loading-spinner {
     text-align: center;
-    padding: 32px 0;
+    padding: clamp(20px, 5vw, 32px) 0;
     color: #94a3b8;
 }
 
 .loading-spinner i {
-    font-size: 32px;
+    font-size: clamp(28px, 7vw, 32px);
     display: block;
     margin-bottom: 12px;
     animation: spin 1s linear infinite;
@@ -1601,7 +1691,6 @@ body {
    RESPONSIVE - MOBILE VIEW
    ============================================================ */
 @media (max-width: 768px) {
-    /* Navigation */
     .nav-tabs {
         padding: 0;
         gap: 0;
@@ -1615,39 +1704,38 @@ body {
     
     .nav-tab {
         flex: 0 0 auto;
-        padding: 12px 14px;
-        font-size: 12px;
+        padding: clamp(8px, 2vw, 12px) clamp(10px, 2.5vw, 14px);
+        font-size: clamp(10px, 2.5vw, 12px);
         gap: 4px;
         min-width: auto;
     }
     
     .nav-tab i {
-        font-size: 14px;
+        font-size: clamp(12px, 3vw, 14px);
     }
     
-    /* Company */
     .company-item {
-        padding: 12px 40px 12px 12px;
+        padding: clamp(8px, 2vw, 12px) clamp(32px, 8vw, 40px) clamp(8px, 2vw, 12px) clamp(8px, 2vw, 12px);
     }
     
     .company-delete {
-        top: 8px;
-        right: 8px;
-        font-size: 13px;
-        padding: 3px 5px;
+        top: clamp(4px, 1.5vw, 8px);
+        right: clamp(4px, 1.5vw, 8px);
+        font-size: clamp(11px, 2.8vw, 13px);
+        padding: 2px 4px;
     }
     
     .company-stats {
-        gap: 4px;
+        gap: 3px;
     }
     
     .stat {
-        font-size: 10px;
-        padding: 2px 6px;
+        font-size: clamp(8px, 2vw, 10px);
+        padding: 1px 4px;
     }
     
     .company-name {
-        font-size: 14px;
+        font-size: clamp(12px, 3vw, 14px);
     }
     
     .add-company {
@@ -1658,17 +1746,16 @@ body {
     .add-company input {
         min-width: auto;
         width: 100%;
-        padding: 10px 14px;
-        font-size: 14px;
+        padding: clamp(8px, 2vw, 10px) clamp(10px, 2.5vw, 14px);
+        font-size: clamp(12px, 3vw, 14px);
     }
     
     .add-company button {
         width: 100%;
-        padding: 12px;
+        padding: clamp(10px, 2.5vw, 12px);
         justify-content: center;
     }
     
-    /* Bill Upload */
     .bill-upload {
         flex-direction: column;
         align-items: stretch;
@@ -1696,7 +1783,6 @@ body {
         justify-content: center;
     }
     
-    /* Payments */
     .payment-header {
         flex-direction: column;
         align-items: flex-start;
@@ -1704,16 +1790,16 @@ body {
     }
     
     .payment-details {
-        font-size: 11px;
-        gap: 8px;
+        font-size: clamp(9px, 2.2vw, 11px);
+        gap: 6px;
     }
     
-    .payment-row .amount-group {
+    .payment-row-flex .amount-group {
         padding: 0 10px;
     }
     
-    .payment-row .amount-group input {
-        font-size: 13px;
+    .payment-row-flex .amount-group input {
+        font-size: clamp(12px, 3vw, 13px);
     }
     
     .payment-group-header {
@@ -1723,7 +1809,7 @@ body {
     }
     
     .payment-total {
-        font-size: 12px;
+        font-size: clamp(10px, 2.5vw, 12px);
     }
     
     .payment-actions {
@@ -1733,7 +1819,7 @@ body {
     .payment-actions .btn-sm {
         flex: 1;
         justify-content: center;
-        min-width: 80px;
+        min-width: 60px;
     }
     
     .payment-inline-row {
@@ -1752,7 +1838,6 @@ body {
         justify-content: center;
     }
     
-    /* Note Actions */
     .note-input .note-actions {
         flex-direction: column;
     }
@@ -1762,114 +1847,113 @@ body {
         justify-content: center;
     }
     
-    /* Transaction Tags */
     .transactions-list {
         gap: 4px;
     }
     
     .transaction-tag {
-        font-size: 10px;
-        padding: 3px 8px;
+        font-size: clamp(8px, 2vw, 10px);
+        padding: 2px 6px;
     }
     
     .transactions-container.collapsed {
-        padding: 4px 10px;
-        font-size: 11px;
+        padding: 3px 8px;
+        font-size: clamp(9px, 2.2vw, 11px);
     }
     
     .transaction-count {
-        font-size: 11px;
+        font-size: clamp(9px, 2.2vw, 11px);
     }
 
-    /* User Info */
     .user-display-name {
-        max-width: 70px;
-        font-size: 12px;
+        max-width: clamp(50px, 15vw, 70px);
+        font-size: clamp(10px, 2.5vw, 12px);
     }
     
     .user-email-small {
-        max-width: 70px;
-        font-size: 9px;
+        max-width: clamp(50px, 15vw, 70px);
+        font-size: clamp(7px, 1.8vw, 9px);
     }
     
     .btn-edit-username i {
-        font-size: 10px;
+        font-size: clamp(8px, 2vw, 10px);
     }
 }
 
 @media (max-width: 480px) {
     .top-bar {
-        padding: 12px 16px 10px;
+        padding: clamp(8px, 2vw, 12px) clamp(10px, 2.5vw, 16px);
+        min-height: clamp(48px, 10vw, 56px);
     }
     
     .app-brand .brand-name {
-        font-size: 15px;
+        font-size: clamp(13px, 3.5vw, 15px);
     }
     
     .app-brand .brand-icon {
-        width: 32px;
-        height: 32px;
+        width: clamp(24px, 6vw, 32px);
+        height: clamp(24px, 6vw, 32px);
     }
     
     .app-brand .brand-icon i {
-        font-size: 15px;
+        font-size: clamp(12px, 3vw, 15px);
     }
     
     .user-avatar {
-        width: 28px;
-        height: 28px;
-        font-size: 12px;
+        width: clamp(22px, 5vw, 28px);
+        height: clamp(22px, 5vw, 28px);
+        font-size: clamp(10px, 2.5vw, 12px);
     }
     
     .btn-logout {
-        font-size: 16px;
+        font-size: clamp(14px, 3.5vw, 16px);
     }
     
     .card-body {
-        padding: 10px 12px;
+        padding: clamp(8px, 2vw, 10px) clamp(8px, 2vw, 12px);
     }
     
     .card-header {
-        padding: 10px 12px;
+        padding: clamp(8px, 2vw, 10px) clamp(8px, 2vw, 12px);
     }
     
     .card-header h3 {
-        font-size: 13px;
+        font-size: clamp(11px, 3vw, 13px);
     }
     
     .tab-content {
-        padding: 12px 12px 16px;
+        padding: clamp(8px, 2vw, 12px);
     }
     
     .nav-tab {
-        padding: 10px 10px;
-        font-size: 11px;
+        padding: clamp(6px, 1.5vw, 10px) clamp(6px, 1.5vw, 10px);
+        font-size: clamp(9px, 2.2vw, 11px);
     }
     
     .nav-tab i {
-        font-size: 12px;
+        font-size: clamp(10px, 2.5vw, 12px);
     }
     
     .company-stats {
-        gap: 3px;
+        gap: 2px;
     }
     
     .stat {
-        font-size: 9px;
-        padding: 1px 5px;
+        font-size: clamp(7px, 1.8vw, 9px);
+        padding: 1px 3px;
     }
     
     .btn-sm {
-        font-size: 10px;
-        padding: 4px 10px;
+        font-size: clamp(8px, 2vw, 10px);
+        padding: 3px 8px;
     }
     
     .payment-group-items .payment-actions .btn-sm {
         flex: 1;
         justify-content: center;
-        min-width: 60px;
-        font-size: 11px;
-        padding: 5px 10px;
+        min-width: 50px;
+        font-size: clamp(9px, 2.2vw, 11px);
+        padding: 4px 8px;
     }
 
     #usernameModal .modal-content {
@@ -1878,70 +1962,55 @@ body {
     }
     
     #usernameModal .modal-content input {
-        font-size: 14px;
-        padding: 10px 14px;
+        font-size: clamp(12px, 3vw, 14px);
+        padding: 8px 12px;
     }
     
     #usernameModal .modal-content button {
-        font-size: 14px;
-        padding: 10px;
+        font-size: clamp(12px, 3vw, 14px);
+        padding: 8px;
     }
 
-    /* Login Screen - Mobile Fixes */
-    .login-screen {
-        padding: 24px 16px 20px;
-    }
-    
-    .login-logo {
-        width: 64px;
-        height: 64px;
-    }
-    
-    .login-logo i {
-        font-size: 28px;
-    }
-    
-    .login-title {
-        font-size: 22px;
-    }
-    
-    .login-subtitle {
-        font-size: 12px;
-        margin-bottom: 24px;
-    }
-    
-    .login-form {
-        gap: 12px;
-    }
-
-    /* Password Toggle - Mobile */
     .password-toggle {
-        right: 10px;
-        font-size: 16px;
-        padding: 6px 8px;
+        right: clamp(6px, 2vw, 10px);
+        font-size: clamp(14px, 3.5vw, 16px);
+        padding: 4px 6px;
     }
     
     .password-toggle i {
-        font-size: 16px;
+        font-size: clamp(14px, 3.5vw, 16px);
     }
     
     .password-group input {
-        padding: 14px 46px 14px 44px !important;
-        font-size: 15px;
+        padding: clamp(10px, 2.5vw, 14px) clamp(36px, 9vw, 46px) clamp(10px, 2.5vw, 14px) clamp(36px, 9vw, 44px) !important;
+        font-size: clamp(13px, 3.2vw, 15px);
     }
     
     .login-form .input-group input {
-        padding: 14px 14px 14px 44px;
-        font-size: 15px;
+        padding: clamp(10px, 2.5vw, 14px) clamp(10px, 2.5vw, 14px) clamp(10px, 2.5vw, 14px) clamp(36px, 9vw, 44px);
+        font-size: clamp(13px, 3.2vw, 15px);
     }
     
     .login-form .input-group .input-icon {
-        left: 14px;
-        font-size: 16px;
+        left: clamp(10px, 2.5vw, 14px);
+        font-size: clamp(14px, 3.5vw, 16px);
     }
     
     .login-actions button {
-        padding: 14px;
-        font-size: 14px;
+        padding: clamp(10px, 2.5vw, 14px);
+        font-size: clamp(12px, 3vw, 14px);
+    }
+
+    .payment-row-flex {
+        flex-direction: column;
+        gap: 8px;
+    }
+    
+    .payment-row-flex .amount-group {
+        min-width: auto;
+    }
+    
+    .payment-date-input {
+        min-width: auto;
     }
 }
