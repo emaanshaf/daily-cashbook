@@ -54,6 +54,7 @@
     let editingPaymentId = null;
     let expandedCompany = null;
     let expandedPerson = null;
+    let unsubscribe = null;
 
     // ============================================================
     // NAVIGATION
@@ -117,7 +118,7 @@
 
     function showLoading(container) {
         if (container) {
-            container.innerHTML = '<div class="loading-spinner"><i class="fas fa-spinner"></i> Loading data...</div>';
+            container.innerHTML = '<div class="loading-spinner"><i class="fas fa-spinner"></i> Loading...</div>';
         }
     }
 
@@ -125,6 +126,44 @@
         if (container) {
             container.innerHTML = '<div class="empty-state"><i class="fas fa-exclamation-circle"></i><p>' + message + '</p></div>';
         }
+    }
+
+    // ============================================================
+    // FIRESTORE REAL-TIME LISTENER
+    // ============================================================
+    function setupRealtimeListener() {
+        if (!currentUser) return;
+        
+        // Unsubscribe from previous listener
+        if (unsubscribe) {
+            unsubscribe();
+            unsubscribe = null;
+        }
+
+        console.log('📡 Setting up real-time listener for:', currentUser.email);
+        
+        const docRef = window.db.collection('users').doc(currentUser.uid);
+        
+        unsubscribe = docRef.onSnapshot(function(doc) {
+            if (doc.exists) {
+                const data = doc.data();
+                if (!data.companies) data.companies = [];
+                if (!data.notes) data.notes = [];
+                if (!data.payments) data.payments = [];
+                
+                // Update local data
+                userData = data;
+                dataLoaded = true;
+                
+                // Re-render UI
+                renderAll();
+                updateSyncStatus(true);
+                console.log('✅ Real-time update received');
+            }
+        }, function(error) {
+            console.error('❌ Real-time listener error:', error);
+            updateSyncStatus(false);
+        });
     }
 
     // ============================================================
@@ -169,6 +208,10 @@
                 userData = data;
                 dataLoaded = true;
                 console.log('✅ Data loaded successfully. Companies:', data.companies.length, 'Notes:', data.notes.length, 'Payments:', data.payments.length);
+                
+                // Setup real-time listener after initial load
+                setupRealtimeListener();
+                
                 return data;
             } else {
                 console.log('📝 Creating new user document');
@@ -177,6 +220,10 @@
                 userData = newData;
                 dataLoaded = true;
                 console.log('✅ New user data created');
+                
+                // Setup real-time listener after initial load
+                setupRealtimeListener();
+                
                 return newData;
             }
         } catch (err) {
@@ -203,6 +250,8 @@
             userData = data;
             updateSyncStatus(true);
             console.log('✅ Data saved successfully');
+            
+            // No need to re-render here - real-time listener will handle it
             return true;
         } catch (err) {
             console.error('❌ saveUserData error:', err);
@@ -273,13 +322,11 @@
             if (isExpanded) {
                 html += '<div class="payment-group-items">';
                 
-                // Inline add payment form
                 html += '<div class="payment-inline-form">';
                 html += '<div class="payment-inline-row">';
                 html += '<input type="number" id="inline_amount_' + person.replace(/\s/g, '_') + '" placeholder="Amount" class="inline-amount" step="0.01">';
                 html += '<input type="date" id="inline_date_' + person.replace(/\s/g, '_') + '" value="' + today + '" class="inline-date">';
                 html += '<input type="text" id="inline_purpose_' + person.replace(/\s/g, '_') + '" placeholder="Purpose" class="inline-purpose">';
-                html += '<input type="file" id="inline_receipt_' + person.replace(/\s/g, '_') + '" accept="image/*" multiple class="inline-receipt" style="display:none;">';
                 html += '<button class="btn-add-inline" onclick="window.addInlinePayment(\'' + person + '\')"><i class="fas fa-plus"></i> Add</button>';
                 html += '</div>';
                 html += '<div style="font-size:11px;color:#94a3b8;margin-top:4px;">Add a new payment to ' + escHtml(person) + '</div>';
@@ -287,7 +334,6 @@
                 
                 sortedPayments.forEach(payment => {
                     const receiptCount = payment.receipts ? payment.receipts.length : 0;
-                    const receiptLabel = receiptCount > 0 ? ' 📎(' + receiptCount + ')' : '';
                     
                     html += '<div class="payment-item">';
                     html += '<div class="payment-header">';
@@ -335,7 +381,6 @@
         const amountInput = document.getElementById('inline_amount_' + personKey);
         const dateInput = document.getElementById('inline_date_' + personKey);
         const purposeInput = document.getElementById('inline_purpose_' + personKey);
-        const fileInput = document.getElementById('inline_receipt_' + personKey);
 
         const amount = parseFloat(amountInput.value);
         const date = dateInput ? dateInput.value : today;
@@ -356,46 +401,14 @@
             date: date
         };
 
-        if (fileInput && fileInput.files && fileInput.files.length > 0) {
-            const receiptPromises = [];
-            const receiptDataArray = [];
-            
-            for (let i = 0; i < fileInput.files.length; i++) {
-                receiptPromises.push(new Promise((resolve) => {
-                    const reader = new FileReader();
-                    reader.onload = function(e) {
-                        receiptDataArray.push(e.target.result);
-                        resolve();
-                    };
-                    reader.readAsDataURL(fileInput.files[i]);
-                }));
-            }
-            
-            Promise.all(receiptPromises).then(() => {
-                payment.receipts = receiptDataArray;
-                payments.push(payment);
-                userData.payments = payments;
-                saveUserData(userData).then(() => {
-                    amountInput.value = '';
-                    purposeInput.value = '';
-                    fileInput.value = '';
-                    expandedPerson = person;
-                    renderAll();
-                    alert('Payment added to ' + person + '!');
-                });
-            });
-        } else {
-            payments.push(payment);
-            userData.payments = payments;
-            saveUserData(userData).then(() => {
-                amountInput.value = '';
-                purposeInput.value = '';
-                fileInput.value = '';
-                expandedPerson = person;
-                renderAll();
-                alert('Payment added to ' + person + '!');
-            });
-        }
+        payments.push(payment);
+        userData.payments = payments;
+        saveUserData(userData).then(() => {
+            amountInput.value = '';
+            purposeInput.value = '';
+            expandedPerson = person;
+            // No need to call renderAll() - real-time listener will update
+        });
     };
 
     window.viewPaymentReceipts = function(paymentId) {
@@ -503,8 +516,7 @@
                 userData.payments = payments;
                 saveUserData(userData).then(() => {
                     resetPaymentForm();
-                    renderAll();
-                    alert('Payment updated!');
+                    // No need to call renderAll() - real-time listener will update
                 });
             }
         } else {
@@ -523,8 +535,7 @@
             userData.payments = payments;
             saveUserData(userData).then(() => {
                 resetPaymentForm();
-                renderAll();
-                alert('Payment saved!');
+                // No need to call renderAll() - real-time listener will update
             });
         }
     }
@@ -572,23 +583,9 @@
         if (!userData) return;
 
         const payments = userData.payments || [];
-        let deletedPerson = null;
-        for (let i = 0; i < payments.length; i++) {
-            if (payments[i].id === paymentId) {
-                deletedPerson = payments[i].person;
-                break;
-            }
-        }
-        
         const newPayments = payments.filter(p => p.id !== paymentId);
         userData.payments = newPayments;
-        saveUserData(userData).then(() => {
-            const remaining = newPayments.filter(p => p.person === deletedPerson);
-            if (remaining.length === 0 && expandedPerson === deletedPerson) {
-                expandedPerson = null;
-            }
-            renderAll();
-        });
+        saveUserData(userData);
     };
 
     // ============================================================
@@ -628,29 +625,25 @@
             
             html += '<div class="company-item" data-index="' + idx + '">';
             
-            // Delete button
             html += '<span class="company-delete" onclick="event.stopPropagation();window.deleteCompany(' + idx + ')" title="Delete Company">';
             html += '<i class="fas fa-trash-alt"></i>';
             html += '</span>';
             
-            // Company Header - Clickable to expand/collapse
             html += '<div class="company-header" onclick="window.toggleCompany(' + idx + ')" style="cursor:pointer;">';
             html += '<span class="company-name"><i class="fas fa-store-alt"></i> ' + escHtml(comp.name) + '</span>';
             html += '<div class="company-stats">';
             html += '<span class="stat received">Received: ' + formatRupees(totalReceived) + '</span>';
             html += '<span class="stat due">Due: ' + formatRupees(totalDues) + '</span>';
             html += '<span class="stat total">Total: ' + formatRupees(totalAmount) + '</span>';
-            html += '<span class="stat toggle-icon" style="background:transparent;padding:0 4px;font-size:14px;color:#94a3b8;">';
+            html += '<span class="stat toggle-icon">';
             html += '<i class="fas fa-chevron-' + (isExpanded ? 'up' : 'down') + '"></i>';
             html += '</span>';
             html += '</div></div>';
             
-            // Add Transaction button (always visible)
             html += '<div class="company-actions">';
             html += '<button class="btn-sm primary" onclick="event.stopPropagation();window.toggleBillUpload(' + idx + ')"><i class="fas fa-receipt"></i> Add Transaction</button>';
             html += '</div>';
             
-            // Bill Upload Form
             html += '<div id="billUpload_' + idx + '" class="bill-upload">';
             html += '<div class="amount-group">';
             html += '<span class="label-icon" style="color:#16a34a;font-size:10px;">Received</span>';
@@ -663,12 +656,11 @@
             html += '<input type="number" id="due_' + idx + '" placeholder="0.00" min="0" step="0.01">';
             html += '</div>';
             html += '<input type="date" id="date_' + idx + '" value="' + today + '">';
-            html += '<input type="file" id="billFile_' + idx + '" accept="image/*" multiple>';
+            html += '<input type="file" id="billFile_' + idx + '" accept="image/*" capture="environment" multiple>';
             html += '<button class="btn-add" onclick="window.addTransaction(' + idx + ')"><i class="fas fa-check"></i> Add</button>';
             html += '<button class="btn-cancel" onclick="window.toggleBillUpload(' + idx + ')">Cancel</button>';
             html += '</div>';
             
-            // Transactions List - Expanded/Collapsed
             if (isExpanded) {
                 html += '<div class="transactions-container expanded">';
                 html += '<div class="transactions-list">';
@@ -701,7 +693,6 @@
                 
                 html += '</div></div>';
             } else {
-                // Collapsed - show transaction count
                 html += '<div class="transactions-container collapsed" onclick="window.toggleCompany(' + idx + ')" style="cursor:pointer;">';
                 if (transactions.length === 0) {
                     html += '<span class="transaction-count">No transactions</span>';
@@ -748,11 +739,7 @@
         companies.splice(idx, 1);
         userData.companies = companies;
         
-        saveUserData(userData).then(() => {
-            if (expandedCompany === idx) expandedCompany = null;
-            renderAll();
-            alert('✅ Company "' + companyName + '" deleted successfully!');
-        });
+        saveUserData(userData);
     };
 
     // ============================================================
@@ -928,11 +915,9 @@
         companies[idx].transactions[transIndex] = updatedTransaction;
         
         saveUserData(userData).then(() => {
-            renderAll();
             resetTransactionForm(idx);
             isEditingTransaction = false;
             editingTransactionData = null;
-            alert('Transaction updated!');
         });
     }
 
@@ -956,11 +941,8 @@
         companies[idx].transactions.push(transaction);
         
         saveUserData(userData).then(() => {
-            renderAll();
             resetTransactionForm(idx);
             expandedCompany = idx;
-            renderAll();
-            alert('Transaction saved!');
         });
     }
 
@@ -997,9 +979,7 @@
         const newTransactions = companies[compIdx].transactions.filter(t => t.id !== transId);
         companies[compIdx].transactions = newTransactions;
         
-        saveUserData(userData).then(() => {
-            renderAll();
-        });
+        saveUserData(userData);
     };
 
     window.viewTransaction = function(compIdx, transId) {
@@ -1078,7 +1058,6 @@
         
         saveUserData(userData).then(() => {
             newCompanyName.value = '';
-            renderAll();
         });
     });
 
@@ -1185,9 +1164,7 @@
         const notes = userData.notes || [];
         const newNotes = notes.filter(note => note.id !== noteId);
         userData.notes = newNotes;
-        saveUserData(userData).then(() => {
-            renderAll();
-        });
+        saveUserData(userData);
     };
 
     saveNoteBtn.addEventListener('click', function() {
@@ -1223,9 +1200,7 @@
             if (found) {
                 userData.notes = notes;
                 saveUserData(userData).then(() => {
-                    alert('Note updated!');
                     resetNoteForm();
-                    renderAll();
                 });
             }
         } else {
@@ -1234,8 +1209,6 @@
             userData.notes = notes;
             saveUserData(userData).then(() => {
                 resetNoteForm();
-                renderAll();
-                alert('Note saved!');
             });
         }
     });
@@ -1275,7 +1248,7 @@
         showLoading(paymentContainer);
         
         await loadUserData();
-        renderAll();
+        // renderAll() will be called by the real-time listener
     };
 
     window.setCurrentUser = function(user) {
@@ -1285,6 +1258,13 @@
 
     window.clearUserData = function() {
         console.log('🧹 Clearing user data');
+        
+        // Unsubscribe from real-time listener
+        if (unsubscribe) {
+            unsubscribe();
+            unsubscribe = null;
+        }
+        
         currentUser = null;
         userData = null;
         dataLoaded = false;
@@ -1322,7 +1302,7 @@
         
         setTimeout(() => {
             loadUserData().then(() => {
-                renderAll();
+                // renderAll() will be called by the real-time listener
             });
         }, 300);
     } else {
@@ -1342,10 +1322,8 @@
                 showLoading(notesContainer);
                 showLoading(paymentContainer);
                 loadUserData().then(() => {
-                    renderAll();
+                    // renderAll() will be called by the real-time listener
                 });
-            } else {
-                renderAll();
             }
         } else {
             console.log('👤 Auth state changed - user logged out');
@@ -1353,6 +1331,6 @@
         }
     });
 
-    console.log('✅ App module loaded');
+    console.log('App module loaded');
 
 })();
