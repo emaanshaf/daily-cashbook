@@ -21,10 +21,10 @@ window.db = firebase.firestore();
 // Enable offline persistence
 window.db.enablePersistence({ synchronizeTabs: true })
     .then(function() {
-        console.log('✅ Firestore persistence enabled');
+        console.log('Firestore persistence enabled');
     })
     .catch(function(err) {
-        console.warn('⚠️ Firestore persistence warning:', err.message);
+        console.warn('Firestore persistence warning:', err.message);
     });
 
 // Set up auth state listener
@@ -39,4 +39,4 @@ window.auth.onAuthStateChanged(function(user) {
     }
 });
 
-console.log('✅ Firebase initialized');
+console.log('Firebase initialized');
