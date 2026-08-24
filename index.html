@@ -27,17 +27,24 @@
         </div>
         <h1 class="login-title">Daily <span>Cashbook</span></h1>
         <p class="login-subtitle">
-            <i class="fas fa-cloud"></i> Cloud sync across devices
+            <i class="fas fa-cloud"></i>made for you bcz you can't do this shit yourself.
         </p>
         <div class="login-form">
+            <!-- Email Field -->
             <div class="input-group">
-                <i class="fas fa-envelope"></i>
+                <i class="fas fa-envelope input-icon"></i>
                 <input type="email" id="loginEmail" placeholder="Email" value="demo@mail.com">
             </div>
-            <div class="input-group">
-                <i class="fas fa-lock"></i>
+            
+            <!-- Password Field -->
+            <div class="input-group password-group">
+                <i class="fas fa-lock input-icon"></i>
                 <input type="password" id="loginPassword" placeholder="Password" value="123456">
+                <button class="password-toggle" id="passwordToggle" type="button" aria-label="Toggle password visibility">
+                    <i class="fas fa-eye"></i>
+                </button>
             </div>
+            
             <div class="login-actions">
                 <button class="btn-primary" id="loginBtn"><i class="fas fa-sign-in-alt"></i> Login</button>
                 <button class="btn-secondary" id="signupBtn"><i class="fas fa-user-plus"></i> Sign Up</button>
@@ -199,5 +206,33 @@
 <script src="firebase-config.js"></script>
 <script src="auth.js"></script>
 <script src="app.js"></script>
+
+<!-- Password Toggle Script -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const passwordInput = document.getElementById('loginPassword');
+        const toggleBtn = document.getElementById('passwordToggle');
+        const eyeIcon = toggleBtn.querySelector('i');
+
+        if (passwordInput && toggleBtn) {
+            toggleBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                if (passwordInput.type === 'password') {
+                    passwordInput.type = 'text';
+                    eyeIcon.className = 'fas fa-eye-slash';
+                    toggleBtn.classList.add('active');
+                    toggleBtn.setAttribute('aria-label', 'Hide password');
+                } else {
+                    passwordInput.type = 'password';
+                    eyeIcon.className = 'fas fa-eye';
+                    toggleBtn.classList.remove('active');
+                    toggleBtn.setAttribute('aria-label', 'Show password');
+                }
+            });
+        }
+    });
+</script>
 </body>
 </html>

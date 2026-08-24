@@ -83,20 +83,25 @@ body {
     gap: 14px;
 }
 
+/* Input Group - Base */
 .login-form .input-group {
     position: relative;
+    width: 100%;
 }
 
-.login-form .input-group i {
+.login-form .input-group .input-icon {
     position: absolute;
     left: 16px;
     top: 50%;
     transform: translateY(-50%);
-    color: #94a3b8;
+    color: #cbd5e1;
     font-size: 18px;
+    z-index: 2;
+    pointer-events: none;
+    transition: color 0.2s;
 }
 
-.login-form input {
+.login-form .input-group input {
     width: 100%;
     padding: 16px 16px 16px 48px;
     border: 2px solid #e2e8f0;
@@ -105,13 +110,99 @@ body {
     background: #f8fafc;
     transition: all 0.2s;
     color: #0f172a;
+    outline: none;
 }
 
-.login-form input:focus {
-    outline: none;
+.login-form .input-group input:focus {
     border-color: #2563eb;
     background: white;
-    box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+    box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.08);
+}
+
+.login-form .input-group input:focus ~ .input-icon {
+    color: #2563eb;
+}
+
+/* Password Group */
+.password-group {
+    position: relative;
+    width: 100%;
+}
+
+.password-group .input-icon {
+    position: absolute;
+    left: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #cbd5e1;
+    font-size: 18px;
+    z-index: 2;
+    pointer-events: none;
+    transition: color 0.2s;
+}
+
+.password-group input {
+    width: 100%;
+    padding: 16px 52px 16px 48px !important;
+    border: 2px solid #e2e8f0;
+    border-radius: 12px;
+    font-size: 16px;
+    background: #f8fafc;
+    transition: all 0.2s;
+    color: #0f172a;
+    outline: none;
+}
+
+.password-group input:focus {
+    border-color: #2563eb;
+    background: white;
+    box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.08);
+}
+
+.password-group input:focus ~ .input-icon {
+    color: #2563eb;
+}
+
+.password-toggle {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: transparent;
+    border: none;
+    color: #cbd5e1;
+    cursor: pointer;
+    padding: 6px 8px;
+    border-radius: 8px;
+    transition: all 0.2s;
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 3;
+    line-height: 1;
+}
+
+.password-toggle:hover {
+    color: #64748b;
+    background: #f1f5f9;
+}
+
+.password-toggle:active {
+    transform: translateY(-50%) scale(0.9);
+}
+
+.password-toggle:focus {
+    outline: none;
+}
+
+.password-toggle i {
+    font-size: 18px;
+    pointer-events: none;
+}
+
+.password-toggle.active {
+    color: #2563eb;
 }
 
 .login-actions {
@@ -1794,5 +1885,63 @@ body {
     #usernameModal .modal-content button {
         font-size: 14px;
         padding: 10px;
+    }
+
+    /* Login Screen - Mobile Fixes */
+    .login-screen {
+        padding: 24px 16px 20px;
+    }
+    
+    .login-logo {
+        width: 64px;
+        height: 64px;
+    }
+    
+    .login-logo i {
+        font-size: 28px;
+    }
+    
+    .login-title {
+        font-size: 22px;
+    }
+    
+    .login-subtitle {
+        font-size: 12px;
+        margin-bottom: 24px;
+    }
+    
+    .login-form {
+        gap: 12px;
+    }
+
+    /* Password Toggle - Mobile */
+    .password-toggle {
+        right: 10px;
+        font-size: 16px;
+        padding: 6px 8px;
+    }
+    
+    .password-toggle i {
+        font-size: 16px;
+    }
+    
+    .password-group input {
+        padding: 14px 46px 14px 44px !important;
+        font-size: 15px;
+    }
+    
+    .login-form .input-group input {
+        padding: 14px 14px 14px 44px;
+        font-size: 15px;
+    }
+    
+    .login-form .input-group .input-icon {
+        left: 14px;
+        font-size: 16px;
+    }
+    
+    .login-actions button {
+        padding: 14px;
+        font-size: 14px;
     }
 }
